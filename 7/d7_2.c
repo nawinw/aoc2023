@@ -18,23 +18,19 @@ int hand2slot(char *hand)
     memset(matches, 0, sizeof(matches));
 
     int total = 0;
-    int num_jokers = 0;
     while(*hand)
     {
         int val = char2val[*hand];
-        if(val == 0)
-            num_jokers++;
         matches[val]++;
         total = (total * NUM_VALUES) + val;
         hand++;
     }
 
     int max_matches[2];
-    int is_joker[2] = {0, 0};
     for (int i = 0; i < 2; i++)
     {
-        int argmax = 0;
-        max_matches[i] = matches[0];
+        int argmax;
+        max_matches[i] = -1;
         for (int j = 1; j < NUM_VALUES; j++)
         {
             if (matches[j] > max_matches[i])
@@ -43,9 +39,9 @@ int hand2slot(char *hand)
                 max_matches[i] = matches[j];
             }
         }
+        max_matches[i] += matches[0];
+        matches[0] = 0;
         matches[argmax] = 0;
-        if (argmax == 0)
-            is_joker[i] = 1;
     }
 
     int type = 0;
@@ -101,5 +97,5 @@ int main(int argc, char *argv[])
             rank++;
         }
     }
-    printf("%d\n", total);
+    printf("%lu\n", total);
 }
